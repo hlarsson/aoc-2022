@@ -1,3 +1,5 @@
+use std::cmp::Reverse;
+
 pub fn part_one(input: &str) -> Option<u32> {
     input
         .split("\n\n")
@@ -11,7 +13,17 @@ pub fn part_one(input: &str) -> Option<u32> {
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    None
+    let mut elves = input
+        .split("\n\n")
+        .map(|elf| {
+            elf.split('\n')
+                .map(|item| item.parse::<u32>().unwrap_or_default())
+                .reduce(|acc: u32, cal: u32| cal + acc)
+                .unwrap()
+        })
+        .collect::<Vec<u32>>();
+    elves.sort_by_key(|n| Reverse(*n));
+    Some(elves[0] + elves[1] + elves[2])
 }
 
 fn main() {
@@ -33,6 +45,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let input = aoc::read_file("examples", 1);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(45000));
     }
 }
